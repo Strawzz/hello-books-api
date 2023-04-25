@@ -1,18 +1,20 @@
-from flask import Blueprint, jsonify, abort, make_response
-
-# class Book:
-#     def __init__(self, id, title, description):
-#         self.id = id
-#         self.title = title
-#         self.description = description
-
-# books = [Book(1, "Daisy", "A good novel."),
-#     Book(2, "A Clean Well-lighted Place", "A good short story."),
-#     Book(3, "Shanghai Flowers", "A realistic novel about courtesan life.")]
+from app import db
+from app.models.book import Book
+from flask import Blueprint, jsonify, abort, make_response, request
 
 books_bp = Blueprint("books", __name__, url_prefix="/books")
 
-@books_bp.route("", methods=["GET"])
+@books_bp.route("", methods=["POST"])
+def handle_books():
+    request_body = request.get_json()
+    new_book = Book(title=request_body["title"],
+                    description=request_body["description"])
+
+    db.session.add(new_book)
+    db.session.commit()
+
+    return make_response(f"Book {new_book.title} successfully created", 201)
+
 # def handle_books():
 #     books_response = []
 #     for book in books:
