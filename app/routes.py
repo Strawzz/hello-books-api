@@ -35,10 +35,15 @@ def update_book(book_id):
     book = valid_book(book_id)
 
     request_body = request.get_json()
-
+    
+    # if not request_body["title"] or not request_body["description"]:
+    #     abort(make_response({"message":"invalid input"}, 400))
+    # else:
+    #     book.title = request_body["title"]
+    #     book.description = request_body["description"]
+    
     book.title = request_body["title"]
     book.description = request_body["description"]
-
     db.session.commit()
 
     return make_response(f"Book #{book.id} successfully updated")
@@ -67,15 +72,16 @@ def handle_books():
     return jsonify(books_response)
 
 
-#     elif request.method == "POST":
-#         request_body = request.get_json()
-#         new_book = Book(title=request_body["title"],
-#                         description=request_body["description"])
+@books_bp.route("", methods=["POST"])
+def post_a_book():
+    request_body = request.get_json()
+    new_book = Book(title=request_body["title"],
+                    description=request_body["description"])
 
-#         db.session.add(new_book)
-#         db.session.commit()
+    db.session.add(new_book)
+    db.session.commit()
 
-#         return make_response(f"Book {new_book.title} successfully created", 201)
+    return make_response(f"Book {new_book.title} successfully created", 201)
 
 
 
