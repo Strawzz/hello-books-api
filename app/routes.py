@@ -22,12 +22,12 @@ def valid_book(book_id):
     
     return book
 
-def valid_paragrams_number(request_body):
+# def valid_paragrams_number(request_body):
 
-    if "title" not in request_body or "description" not in request_body:
-        message = "Please offer all the query paragrams"
-        abort (make_response(f"message: {message}", 400)) 
-    return
+#     if "title" not in request_body or "description" not in request_body:
+#         message = "Please offer all the query paragrams"
+#         abort (make_response(f"message: {message}", 400)) 
+#     return
 
 
 # route functions
@@ -48,13 +48,6 @@ def post_a_book():
     message = f"Book {new_book.title} successfully created"
     return make_response(jsonify(f"message: {message}"), 201)
 
-
-@books_bp.route("/<book_id>", methods = ["GET"])
-def get_one_book(book_id):
-
-    book = valid_book(book_id)
-
-    return book.to_dict()
 
 
 @books_bp.route("/<book_id>", methods = ["PUT"])
@@ -85,28 +78,34 @@ def delete_book(book_id):
 
 
 @books_bp.route("", methods=["GET"])
-def handle_books():
-    
-    request_body = request.get_json()
-    title_query = request_body["title"]
-    description_query = request_body["description"]
-    
+def read_all_books():
+
+    # this code replaces the previous query all code
+    title_query = request.args.get("title")
     if title_query:
         books = Book.query.filter_by(title=title_query)
-    elif description_query:
-        books = Book.query.filter_by(description=description_query)
     else:
         books = Book.query.all()
-        
+    # end of the new code
+
     books_response = []
     for book in books:
-        books_response.append(book.to_dict())
+        books_response.append({
+            "id": book.id,
+            "title": book.title,
+            "description": book.description
+        })
 
     return jsonify(books_response)
 
 
 
+@books_bp.route("/<book_id>", methods = ["GET"])
+def get_one_book(book_id):
 
+    book = valid_book(book_id)
+
+    return book.to_dict()
 
 
 
