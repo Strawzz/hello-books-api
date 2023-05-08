@@ -8,8 +8,8 @@ class Book(db.Model):
     __tablename__ = "book"
 
     def to_dict(self):
-        return dict(
-            id = self.id,
-            title = self.title,
-            desctiption = self.description
-        )
+        return {
+            "id" : self.id,
+            "title" : self.title,
+            "desctiption" : self.description}
+        
