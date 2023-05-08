@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, abort, make_response, request
 
 books_bp = Blueprint("books", __name__, url_prefix="/books")
 
+
 # helper functions
 
 def valid_book(book_id):
@@ -22,12 +23,12 @@ def valid_book(book_id):
     
     return book
 
-# def valid_paragrams_number(request_body):
+def valid_paragrams_number(request_body):
 
-#     if "title" not in request_body or "description" not in request_body:
-#         message = "Please offer all the query paragrams"
-#         abort (make_response(f"message: {message}", 400)) 
-#     return
+    if "title" not in request_body or "description" not in request_body:
+        message = "Please offer all the query paragrams"
+        abort (make_response(f"message: {message}", 400)) 
+    return
 
 
 # route functions
@@ -80,21 +81,16 @@ def delete_book(book_id):
 @books_bp.route("", methods=["GET"])
 def read_all_books():
 
-    # this code replaces the previous query all code
     title_query = request.args.get("title")
     if title_query:
         books = Book.query.filter_by(title=title_query)
     else:
         books = Book.query.all()
-    # end of the new code
+
 
     books_response = []
     for book in books:
-        books_response.append({
-            "id": book.id,
-            "title": book.title,
-            "description": book.description
-        })
+        books_response.append(book.to_dict())
 
     return jsonify(books_response)
 

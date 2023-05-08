@@ -6,6 +6,8 @@ class Book(db.Model):
     title = db.Column(db.String)
     description = db.Column(db.String)
     __tablename__ = "book"
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
+    author = db.relationship("Author", back_populates="books")
 
     def to_dict(self):
         return {
